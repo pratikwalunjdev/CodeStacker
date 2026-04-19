@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email == 'walunjpratik2001@gmail.com' && 
+             request.auth.token.email_verified == true;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidBlog(data) {
+      return data.keys().hasAll(['title', 'content', 'tags', 'category', 'authorId', 'createdAt', 'updatedAt', 'readTime', 'views', 'slug'])
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 200
+        && data.content is string && data.content.size() <= 1048576
+        && data.tags is list && data.tags.size() <= 20
+        && data.category is string && data.category.size() <= 100
+        && data.authorId is string && data.authorId == request.auth.uid
+        && data.readTime is number // read time in minutes
+        && data.views is number
+        && data.slug is string && data.slug.size() <= 200
+        && data.featuredImage is string && data.featuredImage.size() <= 2000;
+    }
+
+    match /blogs/{blogId} {
+      allow get: if true;
+      allow list: if true; // Any client can list blogs (public info)
+
+      allow create: if isAdmin() 
+        && isValidId(blogId)
+        && isValidBlog(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+        
+      allow update: if (
+        isAdmin() 
+        && isValidId(blogId)
+        && isValidBlog(incoming())
+        && incoming().updatedAt == request.time
+        && incoming().createdAt == existing().createdAt
+        && incoming().authorId == existing().authorId
+      ) || (
+        // Allow anyone (even anonymous or unauthenticated) to increment view count by EXACTLY 1.
+        // Wait, allowing everyone to update is risky if they can modify other fields.
+        // Let's use hasOnly to strictly allow only the views field update for non-admins if we want,
+        // but since we want views increment, we can do:
+        incoming().diff(existing()).affectedKeys().hasOnly(['views'])
+        && incoming().views == existing().views + 1
+      );
+
+      allow delete: if isAdmin() && isValidId(blogId);
+    }
+
+    function isValidTag(data) {
+      return data.keys().hasAll(['name', 'count'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.count is number;
+    }
+
+    match /tags/{tagId} {
+      allow get: if true;
+      allow list: if true;
+
+      // Only admins can manipulate tags explicitly 
+      allow create: if isAdmin() && isValidId(tagId) && isValidTag(incoming());
+      allow update: if isAdmin() && isValidId(tagId) && isValidTag(incoming());
+      allow delete: if isAdmin() && isValidId(tagId);
+    }
+
+    function isValidBookmark(data) {
+      return data.keys().hasAll(['blogId', 'createdAt'])
+        && data.blogId is string && isValidId(data.blogId)
+        && data.createdAt == request.time;
+    }
+
+    match /users/{userId}/bookmarks/{bookmarkId} {
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      allow list: if isSignedIn() && request.auth.uid == userId;
+
+      allow create: if isSignedIn() 
+        && request.auth.uid == userId
+        && isValidId(bookmarkId)
+        && isValidBookmark(incoming())
+        && exists(/databases/$(database)/documents/blogs/$(incoming().blogId));
+
+      allow delete: if isSignedIn() && request.auth.uid == userId && isValidId(bookmarkId);
+    }
+  }
+}

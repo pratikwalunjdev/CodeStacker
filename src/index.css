@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0A0A0C;
+  --color-card: #151518;
+  --color-accent: #10B981;
+  --color-accent-hover: #34D399;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #64748b;
+  
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+}
+
+.glass-panel {
+  background: var(--color-card);
+  border: 1px solid rgba(255, 255, 255, 0.05); /* border-white/5 */
+}
+
+/* Navbar specific background */
+.nav-bg {
+  background: rgba(15, 15, 18, 0.8); /* #0F0F12/80 */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.main-bg {
+  background: rgba(15, 15, 18, 0.5); /* #0F0F12/50 */
+}
+
+.sidebar-bg {
+  background: var(--color-bg); /* #0A0A0C */
+}
+
+.input-bg {
+  background: #1A1A1E;
+}
+
+/* Neon accents */
+.neon-glow {
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.neon-text {
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}

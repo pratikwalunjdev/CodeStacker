@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "blog": {
+      "title": "Blog Post",
+      "description": "A blog post.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "category": { "type": "string" },
+        "authorId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "timestamp" },
+        "updatedAt": { "type": "string", "format": "timestamp" },
+        "readTime": { "type": "number" },
+        "featuredImage": { "type": "string" },
+        "views": { "type": "number" },
+        "slug": { "type": "string" }
+      },
+      "required": ["title", "content", "tags", "category", "authorId", "createdAt", "updatedAt", "readTime", "views", "slug"]
+    },
+    "tag": {
+      "title": "Tag",
+      "description": "Tag details",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "count": { "type": "number" }
+      },
+      "required": ["name", "count"]
+    },
+    "bookmark": {
+      "title": "Bookmark",
+      "description": "User bookmark",
+      "type": "object",
+      "properties": {
+        "blogId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "timestamp" }
+      },
+      "required": ["blogId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/blogs/{blogId}": {
+      "schema": { "$ref": "#/entities/blog" },
+      "description": "Stores all blog posts."
+    },
+    "/tags/{tagId}": {
+      "schema": { "$ref": "#/entities/tag" },
+      "description": "Stores tag usage counts."
+    },
+    "/users/{userId}/bookmarks/{bookmarkId}": {
+      "schema": { "$ref": "#/entities/bookmark" },
+      "description": "Stores bookmarks for each user."
+    }
+  }
+}
