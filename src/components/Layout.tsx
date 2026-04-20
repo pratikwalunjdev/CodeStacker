@@ -6,7 +6,7 @@ import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 const Navbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
-  const { user, isAdmin, login, logout } = useAuth();
+  const { user, isAdmin, authError, login, logout } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
@@ -77,6 +77,11 @@ const Navbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
           )}
         </div>
       </div>
+      {authError && (
+        <div className="container mx-auto px-4 py-2 bg-red-500/10 border-t border-red-500/20 text-red-100 text-sm">
+          {authError}
+        </div>
+      )}
     </nav>
   );
 };
