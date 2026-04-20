@@ -6,6 +6,7 @@ import { Home } from './pages/Home';
 import { BlogDetail } from './pages/BlogDetail';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { BookmarkList } from './pages/BookmarkList';
+import { AuthPage } from './pages/AuthPage';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
             <Route path="blog/:slug" element={<BlogDetail />} />
             <Route path="admin" element={<AdminDashboard />} />
             <Route path="bookmarks" element={<BookmarkList />} />
+            <Route path="auth" element={<AuthPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
