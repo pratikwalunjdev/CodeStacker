@@ -8,7 +8,8 @@ import {
   sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth } from '../services/firebase';
-import { ArrowLeft, Google, Mail, Lock, LogIn } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, LogIn } from 'lucide-react';
+import { SiGoogle } from 'react-icons/si';
 
 export const AuthPage = () => {
   const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
@@ -152,7 +153,7 @@ export const AuthPage = () => {
               disabled={loading}
               className="w-full inline-flex items-center justify-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              <Google className="w-5 h-5" />
+              <SiGoogle className="w-5 h-5" />
               Continue with Google
             </button>
 
