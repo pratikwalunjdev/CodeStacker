@@ -60,13 +60,14 @@ const Navbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
                 </Link>
               )}
               <div className="h-8 w-px bg-white/10 hidden sm:block" />
-              <button onClick={logout} className="flex items-center gap-2 text-sm text-text-secondary hover:text-white transition-colors" title="Logout">
+              <button type="button" onClick={logout} className="flex items-center gap-2 text-sm text-text-secondary hover:text-white transition-colors" title="Logout">
                 <img src={user.photoURL || ''} alt="Avatar" className="w-8 h-8 rounded-full border border-white/10" />
                 <LogOut className="w-4 h-4 hidden sm:block" />
               </button>
             </div>
           ) : (
             <button
+              type="button"
               onClick={login}
               className="flex items-center gap-2 text-sm font-medium bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-4 py-2 transition-colors"
             >

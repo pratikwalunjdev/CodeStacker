@@ -100,6 +100,12 @@ export const Home = () => {
           <Code2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <h3 className="text-lg font-medium text-white mb-2">No posts found</h3>
           <p>We couldn't find any blogs matching your criteria.</p>
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button type="button" onClick={() => window.location.assign('/')} className="px-5 py-2 rounded-full bg-accent text-black font-semibold hover:bg-accent-hover transition-colors">
+              Browse all categories
+            </button>
+            <span className="text-sm text-text-muted">If you are the owner, sign in and add posts through the admin dashboard.</span>
+          </div>
         </div>
       )}
     </div>

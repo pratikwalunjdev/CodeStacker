@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { User, onAuthStateChanged, signInWithPopup, signInWithRedirect, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { auth } from '../services/firebase';
 
 interface AuthContextType {
@@ -34,7 +34,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error('Firebase auth popup failed:', error);
+      const authError = error as { code?: string };
+      const fallbackCodes = [
+        'auth/popup-blocked',
+        'auth/popup-closed-by-user',
+        'auth/operation-not-supported-in-this-environment',
+        'auth/cancelled-popup-request',
+      ];
+
+      if (authError.code && fallbackCodes.some((code) => authError.code?.includes(code))) {
+        await signInWithRedirect(auth, provider);
+      } else {
+        throw error;
+      }
+    }
   };
 
   const logout = async () => {
